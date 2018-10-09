@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TODO LIST</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest_ios.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+</head>
+
+<body onload="load();">
+	<!-- <div id="background"></div> -->
+	<div id="app">
+		<div class="header">
+			<h2>TODO LIST</h2>
+			<a href="https://www.tikka.top" target="blank">by matvei tikka</a>
+		</div>
+		<div class="add">
+			<input onfocus="this.value=''" v-model="itemName" placeholder="What to add?" @keydown.enter="addToList()">
+		</div>
+		<uncompleted
+			v-for="(item, index) in items"
+			v-if="!item.done"
+			v-bind:text="item.text"
+			v-bind:done="item.done"
+			v-bind:index="index"
+			v-on:act-remove="removeFromList"
+			v-on:act-update="updateStatus"
+		></uncompleted>
+		<div class="history-header">SHOW HISTORY</div>
+		<completed
+			v-for="(item, index) in items"
+			v-if="item.done"
+			v-bind:text="item.text"
+			v-bind:done="item.done"
+			v-bind:index="index"
+			v-on:act-remove="removeFromList"
+			v-on:act-update="updateStatus"
+		></completed>
+	</div>
+<!--div
+Vue startshere!
+Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Messages-to-Parents-with-Events
+<input type="checkbox" id="checkbox" v-model="done" v-on:click="$emit('act-update', index)">
+<button v-on:click="$emit('act-update', index)">O</button>
+-->
+	<script>
+		function load() {
+			let x = document.getElementById("app").style.opacity = '1';
+		}
+		Vue.component('uncompleted', {
+			props: ['text', 'done', 'index', ],
+			template: `
+			<div class="todo uncompleted">
+				<div>
+					<button id="check" v-on:click="$emit('act-update', index)">
+						<div class="circle off"></div>
+					</button>
+					<span>{{text}}</span>
+				</div>
+				<button id="close" v-on:click="$emit('act-remove', index)">✕</button>
+			</div>
+			`
+		})
+		Vue.component('completed', {
+			props: ['text', 'done', 'index', ],
+			template: `
+			<div class="todo completed">
+				<div>
+					<button id="check" v-on:click="$emit('act-update', index)">
+						<div class="circle on"><p>✓</p></div>
+					</button>
+					<span>{{text}}</span>
+				</div>
+				<button id="close" v-on:click="$emit('act-remove', index)">✕</button>
+			</div>
+			`
+		})
+		var app = new Vue({
+			el: '#app',
+			data: {
+				itemName: '',
+				checked: '',
+				items: [
+					{text: 'car', done: true},
+					{text: 'coffee', done: true},
+					{text: 'berry', done: false},
+				]
+			},
+			methods: {
+				addToList() {
+					var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+					if (this.itemName.length > 30) {
+						alert("You can't enter more than 30 characters");
+						this.itemName = '';
+						return;
+					}
+					if (this.itemName == '') {
+						alert("Please enter something");
+						this.itemName = '';
+						return;
+					}
+					else {
+						let temp = {
+							text: this.itemName,
+							done: false
+						};
+						this.items.splice(0, 0, temp);
+						this.itemName = '';
+					}
+				},
+				removeFromList(index) {
+					this.items.splice(index, 1);
+				},
+				updateStatus(index) {
+					let oldStatus = this.items[index].done;
+					this.items[index].done = !oldStatus;
+					// if (oldStatus == true) {
+					// 	document.getElementById("check").style.color = "transparent";
+					// } else {
+					// 	document.getElementById("check").style.color = "#0C3B66";
+					// }
+				},
+			},
+			mounted() {
+				console.log("App mounted")
+				if (localStorage.getItem('items')) this.items = JSON.parse(localStorage.getItem('items'));
+			},
+			watch: {
+				items: {
+					handler() {
+						console.log('Items changed!');
+						localStorage.setItem('items', JSON.stringify(this.items));
+					},
+					deep: true,
+				},
+			},
+		})
+	</script>
+</body>
+
+</html>
