@@ -10,37 +10,66 @@
     <link rel="manifest" href="manifest_ios.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+    <!-- Google icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body onload="load();">
+<body>
 	<!-- <div id="background"></div> -->
-	<div id="app">
-		<div class="header">
-			<h2>TODO LIST</h2>
+	<div id="app" class="">
+		<!-- <div class="header">
+			<h2 class="center-align">TODO LIST</h2>
 			<a href="https://www.tikka.top" target="blank">by matvei tikka</a>
+		</div> -->
+		<nav>
+			<div class="nav-wrapper blue lighten-1">
+				<div class="row">
+					<div class="col s12">
+						<a href="#!" class="brand-logo">TODO list</a>
+					</div>			
+				</div>
+			</div>
+		</nav>
+		<div class="white">
+			<ul id="tabs-swipe" class="tabs">
+				<li class="tab"><a class="active" href="#tab-tasks">tasks</a></li>
+			  	<li class="tab"><a href="#tab-completed">Completed</a></li>
+			</ul>
+			<div id="tab-tasks" class="container">
+				    <div class="input-field">
+				        <input onfocus="this.value=''" v-model="itemName" placeholder="What to add?" @keydown.enter="addToList()">
+				    </div>
+				<div class="collection">
+					<uncompleted
+						v-for="(item, index) in items"
+						v-if="!item.done"
+						v-bind:text="item.text"
+						v-bind:done="item.done"
+						v-bind:index="index"
+						v-on:act-remove="removeFromList"
+						v-on:act-update="updateStatus"
+					></uncompleted>
+				</div>
+			</div>
+			<div id="tab-completed" class="container">
+				<div class="collection">
+					<completed
+					v-for="(item, index) in items"
+					v-if="item.done"
+					v-bind:text="item.text"
+					v-bind:done="item.done"
+					v-bind:index="index"
+					v-on:act-remove="removeFromList"
+					v-on:act-update="updateStatus"
+				></completed>
+				</div>
+			</div>
 		</div>
-		<div class="add">
-			<input onfocus="this.value=''" v-model="itemName" placeholder="What to add?" @keydown.enter="addToList()">
-		</div>
-		<uncompleted
-			v-for="(item, index) in items"
-			v-if="!item.done"
-			v-bind:text="item.text"
-			v-bind:done="item.done"
-			v-bind:index="index"
-			v-on:act-remove="removeFromList"
-			v-on:act-update="updateStatus"
-		></uncompleted>
-		<div class="history-header">SHOW HISTORY</div>
-		<completed
-			v-for="(item, index) in items"
-			v-if="item.done"
-			v-bind:text="item.text"
-			v-bind:done="item.done"
-			v-bind:index="index"
-			v-on:act-remove="removeFromList"
-			v-on:act-update="updateStatus"
-		></completed>
+		
 	</div>
 <!--div
 Vue startshere!
@@ -48,36 +77,42 @@ Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Mes
 <input type="checkbox" id="checkbox" v-model="done" v-on:click="$emit('act-update', index)">
 <button v-on:click="$emit('act-update', index)">O</button>
 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+    	// var el = document.getElementById("tabs-swipe");
+    	// var instance = M.Tabs.init(el);
+        $(document).ready(function(){
+          $('.tabs').tabs();
+        });
+    </script>
 	<script>
-		function load() {
-			let x = document.getElementById("app").style.opacity = '1';
-		}
 		Vue.component('uncompleted', {
 			props: ['text', 'done', 'index', ],
 			template: `
-			<div class="todo uncompleted">
-				<div>
-					<button id="check" v-on:click="$emit('act-update', index)">
-						<div class="circle off"></div>
-					</button>
-					<span>{{text}}</span>
-				</div>
-				<button id="close" v-on:click="$emit('act-remove', index)">✕</button>
-			</div>
+				<div class="collection-item">
+					<label>
+				    	<input id="checkbox" type="checkbox" v-on:click="$emit('act-update', index)">
+				        <span>{{text}}</span>
+				    </label>
+				    <div v-on:click="$emit('act-remove', index)" class="secondary-content">
+						<i class="material-icons red-text">close</i>
+					</div>
+				</div>				
 			`
 		})
 		Vue.component('completed', {
-			props: ['text', 'done', 'index', ],
+			props: ['text', 'done', 'index'],
 			template: `
-			<div class="todo completed">
-				<div>
-					<button id="check" v-on:click="$emit('act-update', index)">
-						<div class="circle on"><p>✓</p></div>
-					</button>
-					<span>{{text}}</span>
+				<div class="collection-item">
+					<label>
+				    	<input id="checkbox" type="checkbox" checked="unchecked" v-on:click="$emit('act-update', index)">
+				        <span>{{text}}</span>
+				    </label>
+				    <div v-on:click="$emit('act-remove', index)" class="secondary-content">
+						<i class="material-icons red-text">close</i>
+					</div>
 				</div>
-				<button id="close" v-on:click="$emit('act-remove', index)">✕</button>
-			</div>
 			`
 		})
 		var app = new Vue({
@@ -85,6 +120,7 @@ Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Mes
 			data: {
 				itemName: '',
 				checked: '',
+				showCompleted: true,
 				items: [
 					{text: 'car', done: true},
 					{text: 'coffee', done: true},
@@ -119,12 +155,18 @@ Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Mes
 				updateStatus(index) {
 					let oldStatus = this.items[index].done;
 					this.items[index].done = !oldStatus;
-					// if (oldStatus == true) {
-					// 	document.getElementById("check").style.color = "transparent";
-					// } else {
-					// 	document.getElementById("check").style.color = "#0C3B66";
-					// }
 				},
+				toggleCompleted() {
+					var s = document.getElementById("completed-switch").style;
+					console.log(s.display)
+					// if (this.showCompleted == true) {
+					// 	s.display = "none"
+					// 	this.showCompleted = false;
+					// } else {
+					// 	s.display = "flex"
+					// 	this.showCompleted = true;
+					// }
+				}
 			},
 			mounted() {
 				console.log("App mounted")
