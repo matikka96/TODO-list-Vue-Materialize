@@ -4,42 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <title>TODO LIST</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="manifest" href="manifest_ios.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-    <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <!-- Compiled and minified JavaScript -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
-    <!-- Google icons -->
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-	<!-- <div id="background"></div> -->
 	<div id="app" class="">
-		<!-- <div class="header">
-			<h2 class="center-align">TODO LIST</h2>
-			<a href="https://www.tikka.top" target="blank">by matvei tikka</a>
-		</div> -->
-		<nav>
-			<div class="nav-wrapper blue lighten-1">
-				<div class="row">
-					<div class="col s12">
-						<a href="#!" class="brand-logo">TODO list</a>
-					</div>			
+		<div id="header">
+			<nav>
+				<div class="nav-wrapper blue darken-4">
+					<div class="row">
+						<div class="col s12">
+							<a href="https://www.tikka.top/stuff/todolist/" class="brand-logo center">TODO list</a>
+						</div>			
+					</div>
 				</div>
-			</div>
-		</nav>
-		<div class="white">
-			<ul id="tabs-swipe" class="tabs">
-				<li class="tab"><a class="active" href="#tab-tasks">tasks</a></li>
+			</nav>
+			<ul id="tabs-swipe" class="tabs center z-depth-1">
+				<li class="tab active"><a href="#tab-tasks">tasks</a></li>
 			  	<li class="tab"><a href="#tab-completed">Completed</a></li>
 			</ul>
-			<div id="tab-tasks" class="container">
+		</div>
+		<div class="white container">
+			<div id="tab-tasks">
 				    <div class="input-field">
 				        <input onfocus="this.value=''" v-model="itemName" placeholder="What to add?" @keydown.enter="addToList()">
 				    </div>
@@ -55,7 +47,7 @@
 					></uncompleted>
 				</div>
 			</div>
-			<div id="tab-completed" class="container">
+			<div id="tab-completed">
 				<div class="collection">
 					<completed
 					v-for="(item, index) in items"
@@ -65,27 +57,26 @@
 					v-bind:index="index"
 					v-on:act-remove="removeFromList"
 					v-on:act-update="updateStatus"
-				></completed>
+					></completed>
 				</div>
 			</div>
 		</div>
 		
 	</div>
-<!--div
-Vue startshere!
-Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Messages-to-Parents-with-Events
-<input type="checkbox" id="checkbox" v-model="done" v-on:click="$emit('act-update', index)">
-<button v-on:click="$emit('act-update', index)">O</button>
--->
+
+<!-- Materialize initializatin -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-    	// var el = document.getElementById("tabs-swipe");
-    	// var instance = M.Tabs.init(el);
         $(document).ready(function(){
-          $('.tabs').tabs();
+          $('.tabs').tabs({
+          	swipeable : true
+          });
         });
     </script>
+
+<!-- Vue starts here! -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 	<script>
 		Vue.component('uncompleted', {
 			props: ['text', 'done', 'index', ],
@@ -130,8 +121,8 @@ Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Mes
 			methods: {
 				addToList() {
 					var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-					if (this.itemName.length > 30) {
-						alert("You can't enter more than 30 characters");
+					if (this.itemName.length > 15) {
+						alert("You can't enter more than 15 characters");
 						this.itemName = '';
 						return;
 					}
@@ -140,6 +131,11 @@ Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Mes
 						this.itemName = '';
 						return;
 					}
+					if (format.test(this.itemName)) {
+						alert("You can't enter special characters");
+						this.itemName = '';
+						return;
+					} 
 					else {
 						let temp = {
 							text: this.itemName,
@@ -159,13 +155,6 @@ Some tips for components: https://vuejs.org/v2/guide/components.html#Sending-Mes
 				toggleCompleted() {
 					var s = document.getElementById("completed-switch").style;
 					console.log(s.display)
-					// if (this.showCompleted == true) {
-					// 	s.display = "none"
-					// 	this.showCompleted = false;
-					// } else {
-					// 	s.display = "flex"
-					// 	this.showCompleted = true;
-					// }
 				}
 			},
 			mounted() {
