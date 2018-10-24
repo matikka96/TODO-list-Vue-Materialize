@@ -1,5 +1,6 @@
 # TODO list on Vue.js & Materialize
 ![demo gif](https://github.com/matikka96/TODO-list-on-Vue.js/blob/master/demo.gif?raw=true)
+
 Live demo here: https://www.tikka.top/stuff/todolist/
 
 ## How it is made?
