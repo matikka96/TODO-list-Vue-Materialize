@@ -6,3 +6,5 @@ Backbone of the app has been built on Vue.js with use of components and reactive
 
 ## How it works?
 App can be run simply by opening ```index.html``` file in /app directory. It is possible to add this app as a PWA to your homescreen. For example, on iOS press "Add to Homescreen" in Safari and it will automatically fetch icon with the app name.
+
+Live demo here: https://www.tikka.top/stuff/todolist/
