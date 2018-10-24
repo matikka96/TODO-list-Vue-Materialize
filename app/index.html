@@ -120,19 +120,19 @@
 			},
 			methods: {
 				addToList() {
-					var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-					if (this.itemName.length > 15) {
-						alert("You can't enter more than 15 characters");
+					// var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+					// if (format.test(this.itemName)) {
+					// 	alert("You can't enter special characters");
+					// 	this.itemName = '';
+					// 	return;
+					// }
+					if (this.itemName.length > 30) {
+						alert("You can't enter more than 30 characters");
 						this.itemName = '';
 						return;
 					}
 					if (this.itemName == '') {
 						alert("Please enter something");
-						this.itemName = '';
-						return;
-					}
-					if (format.test(this.itemName)) {
-						alert("You can't enter special characters");
 						this.itemName = '';
 						return;
 					} 
